@@ -1,6 +1,6 @@
 using System;
 
-public class MagicStore
+public class MagicStore//All enchantmens
 {
     public List<Magic> tool = new List<Magic>();
 

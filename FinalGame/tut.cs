@@ -3,7 +3,7 @@ using System;
 public class tut
 {
     public void intro(){
-        string Pname;
+        string Pname;//Player Name
         System.Console.WriteLine("Please enter your name:");
         Pname = Console.ReadLine();
         System.Console.WriteLine($"Hello {Pname}, You will now be guided through a short tutorial of the game!");

@@ -1,6 +1,6 @@
 using System;
 
-public class Magic
+public class Magic//Content of all enchantmens
 {
     public string name;
 

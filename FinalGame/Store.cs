@@ -1,6 +1,6 @@
 using System;
 
-public class Store
+public class Store//All buyable items
 {
 
     public List<Item> tool = new List<Item>();

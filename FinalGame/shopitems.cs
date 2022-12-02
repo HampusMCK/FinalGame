@@ -1,6 +1,6 @@
 using System;
 
-public class Item
+public class Item//content of all buyable items
 {
     public string desc;
 
