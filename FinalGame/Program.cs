@@ -9,7 +9,7 @@ string game = "ON"; //used for game while loop
 string CBls; //Check Balance
 
 int MonMin1 = 0; //Money per Mined (how much money you earned when you hit 'dig')
-int CASH = 200; //your balance
+int CASH = 0; //your balance
 int power = 2; //your power level
 int eff = 1; //the effect that your magic upgrades have on your tool
 
