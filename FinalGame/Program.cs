@@ -5,9 +5,9 @@ string DC = ""; //Diggin Choise
 string MinStat; //Mine Status
 string Pos = "Mine"; //Position in game
 string BuyNI;//Buy New Item
-string game = "ON"; //used for game while loop
 string CBls; //Check Balance
 
+int game = 1; //used for game while loop
 int MonMin1 = 0; //Money per Mined (how much money you earned when you hit 'dig')
 int CASH = 0; //your balance
 int power = 2; //your power level
@@ -15,10 +15,12 @@ int eff = 1; //the effect that your magic upgrades have on your tool
 
 bool Ni1 = true; //New Items 1 (unlocks the next part of the store)
 bool mgc = false; //Magic (unlocks the magicians house to upgrade tools)
+bool NLU = false; //Next Level Unlocked? (unlocks the next level)
 
 Store store = new Store();//connects store tab to main tab
 tut tut = new tut(); //connects tutorial tab with main tab
 MagicStore magic = new MagicStore();
+MineTime MFunc = new MineTime();
 
 List<Item> owned = new List<Item>(); //the list of owned tools
 List<Magic> ownedM = new List<Magic>();//the list of owned magic upgrades
@@ -30,7 +32,7 @@ tut.intro(); //Asks for name and explain shortly what to do
 
 System.Console.WriteLine("now that you are in your mine you will have 3 direction to mine, so start by writing which direction you want to go by typing in 'Right', 'Left' or 'Straight'");//these are part of the tutorial
 MinDir = Console.ReadLine();
-while (game == "ON") //while loop to be able to get to the start after leaving the shop
+while (game == 1) //while loop to be able to get to the start after leaving the shop
 {
     while (Pos == "Mine") // while loop for when you are in the mine
     {
@@ -78,6 +80,7 @@ while (game == "ON") //while loop to be able to get to the start after leaving t
 
             while (DC == "Dig" || DC == "dig") //while loop for when you are digging so you can dig multiple times
             {
+                MFunc.MTime();//writes 'mining..' while mining
                 if (power < 5) //if-statement to chose how much is possible for you to dig up based on the power of your item
                 {
                     MonMin1 = gen.Next(16);
@@ -118,6 +121,10 @@ while (game == "ON") //while loop to be able to get to the start after leaving t
                     mgc = true;
                     }
                 }
+                if (CASH >= 1000){
+                    Console.WriteLine("Wow! You have unlocked a new level! Go outside to get to the next level!");
+                    NLU = true;
+                }
                 System.Console.WriteLine("If you would like to dig again type 'Dig', if not, type 'Exit'");
                 DC = Console.ReadLine();
             }
@@ -142,6 +149,7 @@ while (game == "ON") //while loop to be able to get to the start after leaving t
 
     while (Pos == "out" || Pos == "Out") //while loop for if the player tries to write something invalid they will start over
     {
+        if (NLU == false){
         DC = ""; //changing Digging Choice so when they re-enter the mine they wont be imediatly sent back out again
         Console.WriteLine("You are now outside!");
         if(mgc == false){
@@ -178,6 +186,18 @@ while (game == "ON") //while loop to be able to get to the start after leaving t
             Console.WriteLine("Please enter a valid option!");
         }
             
+        }
+        }
+        else{
+            Console.WriteLine("Congratulations on making it to the next level! Let me show you around!");
+            Console.WriteLine("");
+            Console.WriteLine("in here there is also a shop with unlockable items ans different stores that may be unlocked later");
+            Console.WriteLine("");
+            Console.WriteLine("Here you will also have more than one mine to choose from and more mines will be unlocked along the way, and to earn money you will have to sell what you mine first! You will start with $300");
+            game = 2;
+            Pos = "";
+            DC = "";
+            MinDir = "";
         }
     }
 
@@ -282,6 +302,541 @@ while (game == "ON") //while loop to be able to get to the start after leaving t
             Console.WriteLine("Please enter a valid choice!");
         }
     }
+}
+
+
+
+
+//Level 2 variables------------------------------------------------------------------------
+float gold = 0;
+float diamond = 0;
+float iron = 0;
+float silver = 0;
+float copper = 0;
+
+float GWorth = 57.8f;
+float DWorth = 120;
+float IWorth = 0.000087f;
+float SWorth = 0.74f;
+float CWorth = 0.00822f;
+
+float Cash = 300;
+
+int Gdugup = 0;
+int Ddugup = 0;
+int Idugup = 0;
+int Sdugup = 0;
+int Cdugup = 0;
+
+string poss = "Out";
+string MC;
+
+MineList mlist = new MineList();
+
+while (game == 2){
+    while (poss == "Out"){
+        Console.WriteLine("You are now outside!");
+            int cm = 0;
+        foreach (LVL2Mines ml in mlist.mines){
+            Console.WriteLine($"Would you like to enter '{mlist.mines[cm].name}'? Or..");
+            cm++;
+        }
+        Console.WriteLine("Would you like to enter the shop?");
+        MC = Console.ReadLine();
+        if (MC == "shop" || MC == "Shop"){
+            poss = MC;
+        }else {
+                cm = 0;
+            foreach (LVL2Mines ml in mlist.mines){
+                if (MC == mlist.mines[cm].name){
+                    poss = MC;
+                }
+                cm++;
+            }
+        }
+        if (!(poss == MC)){
+            Console.WriteLine("Please enter a valid answer");
+            poss = "Out";
+        }
+    }
+   
+   while (poss == "mine"){
+        int CuIt = -1;
+        int CuEn = -1;
+        foreach (Item V in owned) // to choose the last Item in your 'owned list' to use while mining
+        {
+            CuIt++;
+        }
+        foreach (Magic mg in ownedM)// to choose the last enchantment in your owned enchantments list
+        {
+            CuEn++;
+        }
+        Console.WriteLine($"You are now in your 'mine' if you want to dig with your {owned[CuIt].name} that has {owned[CuIt].power} in power level and is enchanted with {ownedM[CuEn].desc}? if so, please write 'Dig'");
+        DC = Console.ReadLine();
+        while (DC == "Dig" || DC == "dig"){
+             MFunc.MTime();//writes 'mining..' while mining
+                if (owned[CuIt].power < 5) //if-statement to chose how much is possible for you to dig up based on the power of your item
+                {
+                    Idugup = gen.Next(16);
+                }
+                else if (owned[CuIt].power < 11 && owned[CuIt].power > 5)
+                {
+                    Idugup = gen.Next(21);
+                    Cdugup = gen.Next(11);
+                }
+                else if (owned[CuIt].power > 10 && owned[CuIt].power < 20)
+                {
+                    Idugup = gen.Next(41);
+                    Cdugup = gen.Next(21);
+                }
+                else if (owned[CuIt].power > 20 && owned[CuIt].power < 101)
+                {
+                    Idugup = gen.Next(61);
+                    Cdugup = gen.Next(31);
+                }
+                if (eff > 1){
+                Console.WriteLine($"You dug up {Idugup} iron and {Cdugup} copper but with your enchant you dug up {Idugup*eff} iron and {Cdugup*eff} copper!");
+                    Idugup *= eff;//uses the enchantment effect to mine more
+                    Cdugup *= eff;
+                }else{
+                System.Console.WriteLine($"You dug up {Idugup} iron and {Cdugup} copper!");
+                }
+                iron += Idugup; // adding what you dug up to your balance
+                copper += Cdugup;
+                System.Console.WriteLine($"You now have {iron} grams of iron and {copper} grams of copper!");
+                Console.WriteLine("Would you like to dig again please wirte 'Dig' otherwise write 'Exit'");
+                DC = Console.ReadLine();
+                if (DC == "Exit" || DC == "exit"){
+                    poss = "Out";
+                }
+        }
+   }
+   while (poss == "copper mine"){
+int CuIt = -1;
+        int CuEn = -1;
+        foreach (Item V in owned) // to choose the last Item in your 'owned list' to use while mining
+        {
+            CuIt++;
+        }
+        foreach (Magic mg in ownedM)// to choose the last enchantment in your owned enchantments list
+        {
+            CuEn++;
+        }
+        Console.WriteLine($"You are now in your 'copper mine' if you want to dig with your {owned[CuIt].name} that has {owned[CuIt].power} in power level and is enchanted with {ownedM[CuEn].desc}? if so, please write 'Dig'");
+        DC = Console.ReadLine();
+        while (DC == "Dig" || DC == "dig"){
+             MFunc.MTime();//writes 'mining..' while mining
+                if (owned[CuIt].power < 5) //if-statement to chose how much is possible for you to dig up based on the power of your item
+                {
+                    Idugup = gen.Next(26);
+                    Cdugup = gen.Next(16);
+                    Sdugup = gen.Next(6);
+                }
+                else if (owned[CuIt].power < 11 && owned[CuIt].power > 5)
+                {
+                    Idugup = gen.Next(31);
+                    Cdugup = gen.Next(21);
+                    Sdugup = gen.Next(11);
+                }
+                else if (owned[CuIt].power > 10 && owned[CuIt].power < 20)
+                {
+                    Idugup = gen.Next(41);
+                    Cdugup = gen.Next(31);
+                    Sdugup = gen.Next(21);
+                }
+                else if (owned[CuIt].power > 20)
+                {
+                    Idugup = gen.Next(61);
+                    Cdugup = gen.Next(41);
+                    Sdugup = gen.Next(26);
+                }
+                if (eff > 1){
+                Console.WriteLine($"You dug up {Idugup} iron and {Cdugup} copper and {Sdugup} silver but with your enchant you dug up {Idugup*eff} iron and {Cdugup*eff} copper and {Sdugup*eff} silver!");
+                    Idugup *= eff;//uses the enchantment effect to mine more
+                    Cdugup *= eff;
+                    Sdugup *= eff;
+                }else{
+                System.Console.WriteLine($"You dug up {Idugup} iron and {Cdugup} copper nad Sdugup silver!");
+                }
+                iron += Idugup; // adding what you dug up to your balance
+                copper += Cdugup;
+                silver += Sdugup;
+                System.Console.WriteLine($"You now have {iron} grams of iron and {copper} grams of copper and {silver} grams of silver!");
+                Console.WriteLine("Would you like to dig again please wirte 'Dig' otherwise write 'Exit'");
+                DC = Console.ReadLine();
+                if (DC == "Exit" || DC == "exit"){
+                    poss = "Out";
+                }
+        }
+   }
+   while (poss == "silver mine"){
+int CuIt = -1;
+        int CuEn = -1;
+        foreach (Item V in owned) // to choose the last Item in your 'owned list' to use while mining
+        {
+            CuIt++;
+        }
+        foreach (Magic mg in ownedM)// to choose the last enchantment in your owned enchantments list
+        {
+            CuEn++;
+        }
+        Console.WriteLine($"You are now in your 'silver mine' if you want to dig with your {owned[CuIt].name} that has {owned[CuIt].power} in power level and is enchanted with {ownedM[CuEn].desc}? if so, please write 'Dig'");
+        DC = Console.ReadLine();
+        while (DC == "Dig" || DC == "dig"){
+             MFunc.MTime();//writes 'mining..' while mining
+                if (owned[CuIt].power < 5) //if-statement to chose how much is possible for you to dig up based on the power of your item
+                {
+                    Cdugup = gen.Next(26);
+                    Sdugup = gen.Next(16);
+                    Gdugup = gen.Next(6);
+                }
+                else if (owned[CuIt].power < 11 && owned[CuIt].power > 5)
+                {
+                  Cdugup = gen.Next(36);
+                    Sdugup = gen.Next(26);
+                    Gdugup = gen.Next(16);
+                }
+                else if (owned[CuIt].power > 10 && owned[CuIt].power < 20)
+                {
+                    Cdugup = gen.Next(46);
+                    Sdugup = gen.Next(36);
+                    Gdugup = gen.Next(26);
+                }
+                else if (owned[CuIt].power > 20)
+                {
+                   Cdugup = gen.Next(56);
+                    Sdugup = gen.Next(36);
+                    Gdugup = gen.Next(26);
+                }
+                if (eff > 1){
+                Console.WriteLine($"You dug up {Cdugup} copper and {Sdugup} silver and {Gdugup} gold but with your enchant you dug up {Cdugup*eff} copper and {Sdugup*eff} silver and {Gdugup*eff} gold!");
+                    Cdugup *= eff;//uses the enchantment effect to mine more
+                    Sdugup *= eff;
+                    Gdugup *= eff;
+                }else{
+                System.Console.WriteLine($"You dug up {Cdugup} copper and {Sdugup} silver and {Gdugup}!");
+                }
+                silver += Sdugup; // adding what you dug up to your balance
+                copper += Cdugup;
+                gold += Gdugup;
+                System.Console.WriteLine($"You now have {copper} grams of copper and {silver} grams of silver and {gold} grams of gold!");
+                Console.WriteLine("Would you like to dig again please wirte 'Dig' otherwise write 'Exit'");
+                DC = Console.ReadLine();
+                if (DC == "Exit" || DC == "exit"){
+                    poss = "Out";
+                }
+        }
+   }
+   while (poss == "gold mine"){
+int CuIt = -1;
+        int CuEn = -1;
+        foreach (Item V in owned) // to choose the last Item in your 'owned list' to use while mining
+        {
+            CuIt++;
+        }
+        foreach (Magic mg in ownedM)// to choose the last enchantment in your owned enchantments list
+        {
+            CuEn++;
+        }
+        Console.WriteLine($"You are now in your 'gold mine' if you want to dig with your {owned[CuIt].name} that has {owned[CuIt].power} in power level and is enchanted with {ownedM[CuEn].desc}? if so, please write 'Dig'");
+        DC = Console.ReadLine();
+        while (DC == "Dig" || DC == "dig"){
+             MFunc.MTime();//writes 'mining..' while mining
+                if (owned[CuIt].power < 5) //if-statement to chose how much is possible for you to dig up based on the power of your item
+                {
+                     Sdugup = gen.Next(26);
+                    Gdugup = gen.Next(16);
+                    Ddugup = gen.Next(6);
+                }
+                else if (owned[CuIt].power < 11 && owned[CuIt].power > 5)
+                {
+                   Sdugup = gen.Next(36);
+                    Gdugup = gen.Next(26);
+                    Ddugup = gen.Next(16);
+                }
+                else if (owned[CuIt].power > 10 && owned[CuIt].power < 20)
+                {
+                    Sdugup = gen.Next(46);
+                    Gdugup = gen.Next(36);
+                    Ddugup = gen.Next(26);
+                }
+                else if (owned[CuIt].power > 20)
+                {
+                    Sdugup = gen.Next(56);
+                    Gdugup = gen.Next(46);
+                    Ddugup = gen.Next(36);
+                }
+                if (eff > 1){
+                Console.WriteLine($"You dug up {Sdugup} silver and {Gdugup} gold and {Ddugup} diamond but with your enchant you dug up {Sdugup*eff} silver and {Gdugup*eff} gold and {Ddugup*eff} diamond!");
+                    Sdugup *= eff;//uses the enchantment effect to mine more
+                    Gdugup *= eff;
+                    Ddugup *= eff;
+                }else{
+                System.Console.WriteLine($"You dug up {Sdugup} silver and {Gdugup} gold and {Ddugup} diamond!");
+                }
+                silver += Sdugup; // adding what you dug up to your balance
+                gold += Gdugup;
+                diamond += Ddugup;
+                System.Console.WriteLine($"You now have {silver} grams of silver and {gold} grams of gold and {diamond} grams of diamond!");
+                Console.WriteLine("Would you like to dig again please wirte 'Dig' otherwise write 'Exit'");
+                DC = Console.ReadLine();
+                if (DC == "Exit" || DC == "exit"){
+                    poss = "Out";
+                }
+        }
+   }
+   while (poss == "diamond mine"){
+int CuIt = -1;
+        int CuEn = -1;
+        foreach (Item V in owned) // to choose the last Item in your 'owned list' to use while mining
+        {
+            CuIt++;
+        }
+        foreach (Magic mg in ownedM)// to choose the last enchantment in your owned enchantments list
+        {
+            CuEn++;
+        }
+        Console.WriteLine($"You are now in your 'diamond mine' if you want to dig with your {owned[CuIt].name} that has {owned[CuIt].power} in power level and is enchanted with {ownedM[CuEn].desc}? if so, please write 'Dig'");
+        DC = Console.ReadLine();
+        while (DC == "Dig" || DC == "dig"){
+             MFunc.MTime();//writes 'mining..' while mining
+                if (owned[CuIt].power < 5) //if-statement to chose how much is possible for you to dig up based on the power of your item
+                {
+                    Gdugup = gen.Next(26);
+                    Ddugup = gen.Next(16);
+                }
+                else if (owned[CuIt].power < 11 && owned[CuIt].power > 5)
+                {
+                    Gdugup = gen.Next(36);
+                    Ddugup = gen.Next(26);
+                }
+                else if (owned[CuIt].power > 10 && owned[CuIt].power < 20)
+                {
+                   Gdugup = gen.Next(46);
+                    Ddugup = gen.Next(36);
+                }
+                else if (owned[CuIt].power > 20)
+                {
+                    Gdugup = gen.Next(56);
+                    Ddugup = gen.Next(46);
+                }
+                if (eff > 1){
+                Console.WriteLine($"You dug up {Gdugup} gold and {Ddugup} diamond but with your enchant you dug up {Gdugup*eff} gold and {Ddugup*eff} diamond!");
+                    Gdugup *= eff;//uses the enchantment effect to mine more
+                    Ddugup *= eff;
+                }else{
+                System.Console.WriteLine($"You dug up {Gdugup} gold and {Ddugup} diamond!");
+                }
+                gold += Gdugup; // adding what you dug up to your balance
+                diamond += Ddugup;
+                System.Console.WriteLine($"You now have {gold} grams of gold and {diamond} grams of diamond!");
+                Console.WriteLine("Would you like to dig again please wirte 'Dig' otherwise write 'Exit'");
+                DC = Console.ReadLine();
+                if (DC == "Exit" || DC == "exit"){
+                    poss = "Out";
+                }
+        }
+   }
+
+   while (poss == "shop" || poss == "Shop"){
+    float Amo = 0;
+    float AddAmo = 0;
+    Console.WriteLine("Welcome to the store, where you can both sell and buy, what would you like to do? please write 'Sell' or 'Buy'");
+    string BS = Console.ReadLine();
+
+
+//                                              Sell                                                          //
+    if(BS == "sell" || BS == "Sell"){
+        Console.WriteLine($"Gold is worth: {GWorth} per gram");
+        Console.WriteLine($"Iron is worth: {IWorth} per gram");
+        Console.WriteLine($"Silver is worth: {SWorth} per gram");
+        Console.WriteLine($"Diamond is worth: {DWorth} per gram");
+        Console.WriteLine($"Copper is worth: {CWorth} per gram");
+        Console.WriteLine("what would you like to sell? Or if you wish to leave please write 'Exit'");
+        string SeI = Console.ReadLine();
+        if (SeI == "Gold" || SeI == "gold"){
+            Console.WriteLine("And how much? please answer in whole digits only! Or if you changed your mind, please write 'Exit'");
+            string SeA = Console.ReadLine();
+            if (SeA == "Exit" || SeA == "exit"){poss = "Out";}
+            float.TryParse(SeA, out Amo);
+            if (Amo > gold || Amo < 0){
+                Console.WriteLine("please enter a valid amount!");
+            }
+            else if (Amo > 0 && Amo <= gold){
+                AddAmo = Amo*GWorth;
+                Console.WriteLine($"That will add up to ${AddAmo}");
+                Cash += AddAmo;
+                Console.WriteLine($"Your balance is now ${Cash}");
+                poss = "Out";
+            }
+        }
+        if (SeI == "Silver" || SeI == "silver"){
+              Console.WriteLine("And how much? please answer in whole digits only! Or if you changed your mind, please write 'Exit'");
+            string SeA = Console.ReadLine();
+            if (SeA == "Exit" || SeA == "exit"){poss = "Out";}
+            float.TryParse(SeA, out Amo);
+            if (Amo > silver || Amo < 0){
+                Console.WriteLine("please enter a valid amount!");
+            }
+            else if (Amo > 0 && Amo <= silver){
+                AddAmo = Amo*SWorth;
+                Console.WriteLine($"That will add up to ${AddAmo}");
+                Cash += AddAmo;
+                Console.WriteLine($"Your balance is now ${Cash}");
+                poss = "Out";
+            }
+        }
+        if (SeI == "Iron" || SeI == "iron"){
+              Console.WriteLine("And how much? please answer in whole digits only! Or if you changed your mind, please write 'Exit'");
+            string SeA = Console.ReadLine();//sell amount
+            if (SeA == "Exit" || SeA == "exit"){poss = "Out";}
+            float.TryParse(SeA, out Amo);//change sell amount to integer
+            if (Amo > iron || Amo < 0){
+                Console.WriteLine("please enter a valid amount!");
+            }
+            else if (Amo > 0 && Amo <= iron){
+                AddAmo = Amo*IWorth;
+                Console.WriteLine($"That will add up to ${AddAmo}");
+                Cash += AddAmo;
+                Console.WriteLine($"Your balance is now ${Cash}");
+                poss = "Out";
+            }
+        }
+        if (SeI == "Diamond" || SeI == "diamond"){
+              Console.WriteLine("And how much? please answer in whole digits only! Or if you changed your mind, please write 'Exit'");
+            string SeA = Console.ReadLine();
+            if (SeA == "Exit" || SeA == "exit"){poss = "Out";}
+            float.TryParse(SeA, out Amo);
+            if (Amo > diamond || Amo < 0){
+                Console.WriteLine("please enter a valid amount!");
+            }
+            else if (Amo > 0 && Amo <= diamond){
+                AddAmo = Amo*DWorth;
+                Console.WriteLine($"That will add up to ${AddAmo}");
+                Cash += AddAmo;
+                Console.WriteLine($"Your balance is now ${Cash}");
+                poss = "Out";
+            }
+        }
+        if (SeI == "Copper" || SeI == "copper"){
+              Console.WriteLine("And how much? please answer in whole digits only! Or if you changed your mind, please write 'Exit'");
+            string SeA = Console.ReadLine();
+            if (SeA == "Exit" || SeA == "exit"){poss = "Out";}
+            float.TryParse(SeA, out Amo);
+            if (Amo > copper || Amo < 0){
+                Console.WriteLine("please enter a valid amount!");
+            }
+            else if (Amo > 0 && Amo <= copper){
+                AddAmo = Amo*CWorth;
+                Console.WriteLine($"That will add up to ${AddAmo}");
+                Cash += AddAmo;
+                Console.WriteLine($"Your balance is now ${Cash}");
+                poss = "Out";
+            }
+        }else if (SeI == "Exit" || SeI == "exit"){
+            poss = "Out";
+        }else{
+            Console.WriteLine("Please write a valid answer!");
+        }
+    }
+
+//                                          BUY                                             //
+    if (BS == "Buy" || BS == "buy"){
+        Console.WriteLine("You can buy:");
+        Console.WriteLine();
+        Console.WriteLine("Mines:");
+        Console.WriteLine("copper mine, cost: $700");
+        Console.WriteLine("silver mine, cost: $850");
+        Console.WriteLine("gold mine, cost: $1000");
+        Console.WriteLine("diamond mine, cost: $1500");
+        Console.WriteLine();
+        Console.WriteLine();
+        Console.WriteLine("Items:");
+        Console.WriteLine("magic drill, cost: $400");
+        Console.WriteLine("danger tool, cost: $500");
+        Console.WriteLine("dynamite, cost: $600");
+        Console.WriteLine("write the name of what you want to buy! Or if you want to leave please wirte 'Exit'!");
+        string BC = Console.ReadLine();
+        if (BC == "copper mine" || BC == "Copper mine"){
+            Cash -= 700;
+            if (Cash >= 0){
+            mlist.mines.Add(new LVL2Mines{name = "copper mine"});
+            poss = "Out";
+            }
+            else{
+                Cash += 700;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+
+        }
+        if (BC == "Silver mine" || BC == "silver mine"){
+            Cash -= 850;
+            if (Cash >= 0){
+            mlist.mines.Add(new LVL2Mines{name = "silver mine"});
+            poss = "Out";
+            } else{
+                Cash += 850;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+        }
+        if (BC == "Gold mine" || BC == "gold mine"){
+            Cash -= 1000;
+            if (Cash >= 0){
+            mlist.mines.Add(new LVL2Mines{name = "gold mine"});
+            poss = "Out";
+            } else{
+                Cash += 1000;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+        }
+        if (BC == "Diamond mine" || BC == "diamond mine"){
+            Cash -= 1500;
+            if (Cash >= 0){
+            mlist.mines.Add(new LVL2Mines{name = "diamond mine"});
+            poss = "Out";
+            } else{
+                Cash += 1500;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+        }
+        if (BC == "Magic drill" || BC == "magic drill"){
+            Cash -= 400;
+            if (Cash >= 0){
+            owned.Add(new Item{name = "Magic drill", power = 150});
+            poss = "Out";
+            }
+         else{
+                Cash += 400;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+        }
+        if (BC == "Danger tool" || BC == "danger tool"){
+            Cash -= 500;
+            if (Cash >= 0){
+            owned.Add(new Item{name = "Danger tool", power = 250});
+            poss = "Out";
+            } else{
+                Cash += 500;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+        }
+        if (BC == "Dynamite" || BC == "dynamite"){
+            Cash -= 600;
+            if (Cash >= 0){
+            owned.Add(new Item{name = "Dynamite", power = 500});
+            poss = "Out";
+            } else{
+                Cash += 600;
+                Console.WriteLine("That is too expensive for you! Try again");
+            }
+        }else if(BC == "Exit" || BC == "exit"){
+            poss = "Out";
+        }
+       else{
+        Console.WriteLine("please enter a valid option");
+       }
+    }
+   }
 }
 
 
