@@ -666,6 +666,7 @@ int CuIt = -1;
                 Console.WriteLine("please enter a valid amount!");
             }
             else if (Amo > 0 && Amo <= gold){
+                gold -= Amo;
                 AddAmo = Amo*GWorth;
                 Console.WriteLine($"That will add up to ${AddAmo}");
                 Cash += AddAmo;
@@ -682,6 +683,7 @@ int CuIt = -1;
                 Console.WriteLine("please enter a valid amount!");
             }
             else if (Amo > 0 && Amo <= silver){
+                silver -= Amo;
                 AddAmo = Amo*SWorth;
                 Console.WriteLine($"That will add up to ${AddAmo}");
                 Cash += AddAmo;
@@ -698,6 +700,7 @@ int CuIt = -1;
                 Console.WriteLine("please enter a valid amount!");
             }
             else if (Amo > 0 && Amo <= iron){
+                iron -= Amo;
                 AddAmo = Amo*IWorth;
                 Console.WriteLine($"That will add up to ${AddAmo}");
                 Cash += AddAmo;
@@ -714,6 +717,7 @@ int CuIt = -1;
                 Console.WriteLine("please enter a valid amount!");
             }
             else if (Amo > 0 && Amo <= diamond){
+                diamond -= Amo;
                 AddAmo = Amo*DWorth;
                 Console.WriteLine($"That will add up to ${AddAmo}");
                 Cash += AddAmo;
@@ -730,6 +734,7 @@ int CuIt = -1;
                 Console.WriteLine("please enter a valid amount!");
             }
             else if (Amo > 0 && Amo <= copper){
+                copper -= Amo;
                 AddAmo = Amo*CWorth;
                 Console.WriteLine($"That will add up to ${AddAmo}");
                 Cash += AddAmo;
