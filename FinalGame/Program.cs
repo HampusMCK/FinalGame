@@ -137,6 +137,9 @@ while (game == 1) //while loop to be able to get to the start after leaving the 
                 {
                     Pos = "out";
                     MinDir = "";
+                }else if (MinStat == "Right" || MinStat == "right" || MinStat == "Left" || MinStat == "left" || MinStat == "Straight" || MinStat == "straight"){
+                    DC = "";
+                    MinDir = "Right";
                 }
             }
             while (!(DC == "Dig" || DC == "dig" || DC == "Exit" || DC == "exit")) //if player answered invalid they will be asked again until they give a valid answer
