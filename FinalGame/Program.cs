@@ -319,9 +319,9 @@ float copper = 0;
 
 float GWorth = 57.8f;
 float DWorth = 120;
-float IWorth = 0.000087f;
+float IWorth = 0.0087f;
 float SWorth = 0.74f;
-float CWorth = 0.00822f;
+float CWorth = 0.0822f;
 
 float Cash = 300;
 
